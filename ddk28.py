@@ -108,21 +108,21 @@ def run_quiz():
 #         st.success("✨ Das ganze Bild ist enthüllt!")
 #         st.session_state.animating = False
 
-# def ascii_slide():
-#     try:
-#         with open("dot_art.txt", "r", encoding="utf-8") as f:
-#             ascii_lines = f.readlines()
-#     except FileNotFoundError:
-#         st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
-#         return
+def ascii_slide():
+    try:
+        with open("dot_art.txt", "r", encoding="utf-8") as f:
+            ascii_lines = f.readlines()
+    except FileNotFoundError:
+        st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+        return
 
-#     max_lines = len(ascii_lines)
-#     slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
-#     displayed_text = "".join(ascii_lines[:slider_val])
-#     st.text(displayed_text)
+    max_lines = len(ascii_lines)
+    slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
+    displayed_text = "".join(ascii_lines[:slider_val])
+    st.text(displayed_text)
 
-#     if slider_val == max_lines:
-#         st.success("✨ Das ganze Bild ist enthüllt!")
+    if slider_val == max_lines:
+        st.success("✨ Das ganze Bild ist enthüllt!")
 
 
 def main():
