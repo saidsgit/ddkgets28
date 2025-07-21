@@ -155,7 +155,7 @@ def main():
     st.markdown("---")
     st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
 
-    ascii_slide
+    ascii_slide()
 
     st.markdown("---")
     st.caption("Mit ganz viel ❤️ für dich gemacht.")
