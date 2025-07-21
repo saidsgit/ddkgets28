@@ -207,11 +207,11 @@ def main():
     st.markdown("---")
 
     # Steuerung der Phasen
-    if "phase" not in st.session_state:
-        st.session_state.phase = "quiz"
+    # if "phase" not in st.session_state:
+    #     st.session_state.phase = "quiz"
 
-    if st.session_state.phase == "quiz":
-        run_quiz()
-        if st.session_state.get("quiz_done", False) and st.session_state.get("quiz_score", 0) == len(quiz):
-            st.session_state.phase = "puzzle"
-            st.experimental_rer
+    # if st.session_state.phase == "quiz":
+    #     run_quiz()
+    #     if st.session_state.get("quiz_done", False) and st.session_state.get("quiz_score", 0) == len(quiz):
+    #         st.session_state.phase = "puzzle"
+    #         st.experimental_rer
