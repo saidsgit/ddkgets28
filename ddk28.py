@@ -85,7 +85,11 @@ def ascii_animation():
         except FileNotFoundError:
             st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
             st.session_state.ascii_lines = []
+
+    # Initialisiere die Variablen, falls nicht vorhanden
+    if "line_index" not in st.session_state:
         st.session_state.line_index = 0
+    if "animating" not in st.session_state:
         st.session_state.animating = True
 
     placeholder = st.empty()
