@@ -132,9 +132,9 @@ def ascii_slide():
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
     st.markdown("""
-    Willkommen zu deinem ganz persönlichen Geburtstagsquiz rund um Taylor Swift!
+    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
     
-    Wenn du alles richtig beantwortest, erwartet dich eine kleine Überraschung 🎁
+    Taytay-Wissen könnte Dich heute weiterbringen. 🎁
     """)
 
     try:
@@ -148,7 +148,7 @@ def main():
     run_quiz()
 
     st.markdown("---")
-    st.markdown("## 🖼️ Dein persönliches Dot-Art-Bild")
+    st.markdown("## 🖼️ DDK = Schönheit auf den Punkt gebracht")
 
     try:
         dot_img = Image.open("dot_art.jpg")
@@ -157,12 +157,12 @@ def main():
         st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
     st.markdown("---")
-    st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
+    st.markdown("## 💬 Bonus-Level")
 
     ascii_slide()
 
     st.markdown("---")
-    st.caption("Mit ganz viel ❤️ für dich gemacht.")
+    st.caption("Du bist 🆒s.")
 
 if __name__ == "__main__":
     main()
