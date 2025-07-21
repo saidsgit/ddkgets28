@@ -107,6 +107,7 @@ def run_quiz():
 #         placeholder.text(displayed_text)
 #         st.success("✨ Das ganze Bild ist enthüllt!")
 #         st.session_state.animating = False
+import time
 
 def ascii_slide():
     try:
@@ -117,12 +118,39 @@ def ascii_slide():
         return
 
     max_lines = len(ascii_lines)
-    slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
-    displayed_text = "".join(ascii_lines[:slider_val])
+
+    # Initialisierung von States
+    if "slider_val" not in st.session_state:
+        st.session_state.slider_val = 1
+    if "auto_play" not in st.session_state:
+        st.session_state.auto_play = False
+
+    # Button: Start der Animation
+    if st.button("▶️ Zeilen automatisch anzeigen"):
+        st.session_state.auto_play = True
+
+    # Slider: Kontrolle auch manuell möglich
+    st.session_state.slider_val = st.slider(
+        "Wie viele Zeilen möchtest du sehen?",
+        1,
+        max_lines,
+        st.session_state.slider_val,
+        key="ascii_slider"
+    )
+
+    # Textanzeige
+    displayed_text = "".join(ascii_lines[:st.session_state.slider_val])
     st.text(displayed_text)
 
-    if slider_val == max_lines:
+    # Animation
+    if st.session_state.auto_play and st.session_state.slider_val < max_lines:
+        time.sleep(0.05)
+        st.session_state.slider_val += 1
+        st.experimental_rerun()
+    elif st.session_state.slider_val == max_lines:
+        st.session_state.auto_play = False
         st.success("✨ Das ganze Bild ist enthüllt!")
+
 
 
 def main():
