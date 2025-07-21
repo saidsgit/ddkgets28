@@ -87,7 +87,7 @@ def run_puzzle():
 
 # === DOT ART BELONUNG ===
 def show_dot_art():
-    st.markdown("## 🖼️ Deine Belohnung")
+    st.markdown("## 🖼️ Schönheit auf den Punkt gebracht")
     try:
         img = Image.open("dot_art.jpg")
         st.image(img, caption="Dot-Art ✨", use_container_width=True)
@@ -129,7 +129,9 @@ def show_final_reward():
 # === MAIN ===
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
-    st.markdown("Willkommen auf deiner Geburtstags-Webseite. 🎁")
+    st.markdown("Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
+    
+    Taytay-Wissen könnte Dich heute weiterbringen. 🎁")
 
     try:
         st.image("rabbit.gif", caption="Taylor sagt: Viel Glück!", use_container_width=True)
