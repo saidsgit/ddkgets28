@@ -120,40 +120,13 @@ def ascii_slide():
         return
 
     max_lines = len(ascii_lines)
+    slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
+    displayed_text = "".join(ascii_lines[:slider_val])
+    st.text(displayed_text)
 
-    # Initialisieren
-    if "current_line" not in st.session_state:
-        st.session_state.current_line = 1
-    if "auto_play" not in st.session_state:
-        st.session_state.auto_play = False
+    if slider_val == max_lines:
+        st.success("✨ Das ganze Bild ist enthüllt!")
 
-    # Auto-Play starten
-    if st.button("▶️ Automatisch Zeilen anzeigen"):
-        st.session_state.auto_play = True
-
-    # Manuelle Kontrolle per Slider (separat)
-    slider_val = st.slider(
-        "Manuell Zeilen anzeigen",
-        1,
-        max_lines,
-        st.session_state.current_line,
-        key="ascii_manual_slider"
-    )
-
-    # Bei Auto-Play: automatisch Zeilen erhöhen
-    if st.session_state.auto_play:
-        if st.session_state.current_line < max_lines:
-            time.sleep(0.05)
-            st.session_state.current_line += 1
-            st.experimental_rerun()
-        else:
-            st.session_state.auto_play = False
-            st.success("✨ Das ganze Bild ist enthüllt!")
-
-    # Anzeige entsprechend aktueller Linie (manuell oder auto)
-    displayed_lines = min(slider_val, st.session_state.current_line)
-    displayed_text = "".join(ascii_lines[:displayed_lines])
-    st.code(displayed_text, language="")
 
 
 def main():
