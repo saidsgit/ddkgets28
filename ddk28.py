@@ -77,36 +77,53 @@ def run_quiz():
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
-def ascii_animation():
-    if "ascii_lines" not in st.session_state:
-        try:
-            with open("dot_art.txt", "r", encoding="utf-8") as f:
-                st.session_state.ascii_lines = f.readlines()
-        except FileNotFoundError:
-            st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
-            st.session_state.ascii_lines = []
+# def ascii_animation():
+#     if "ascii_lines" not in st.session_state:
+#         try:
+#             with open("dot_art.txt", "r", encoding="utf-8") as f:
+#                 st.session_state.ascii_lines = f.readlines()
+#         except FileNotFoundError:
+#             st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+#             st.session_state.ascii_lines = []
 
-    # Initialisiere die Variablen, falls nicht vorhanden
-    if "line_index" not in st.session_state:
-        st.session_state.line_index = 0
-    if "animating" not in st.session_state:
-        st.session_state.animating = True
+#     # Initialisiere die Variablen, falls nicht vorhanden
+#     if "line_index" not in st.session_state:
+#         st.session_state.line_index = 0
+#     if "animating" not in st.session_state:
+#         st.session_state.animating = True
 
-    placeholder = st.empty()
+#     placeholder = st.empty()
 
-    if st.session_state.animating and st.session_state.line_index < len(st.session_state.ascii_lines):
-        displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
-        placeholder.text(displayed_text)
+#     if st.session_state.animating and st.session_state.line_index < len(st.session_state.ascii_lines):
+#         displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
+#         placeholder.text(displayed_text)
 
-        st.session_state.line_index += 1
+#         st.session_state.line_index += 1
 
-        time.sleep(0.2)
-        st.experimental_rerun()
-    else:
-        displayed_text = "".join(st.session_state.ascii_lines)
-        placeholder.text(displayed_text)
-        st.success("✨ Das ganze Bild ist enthüllt!")
-        st.session_state.animating = False
+#         time.sleep(0.2)
+#         st.experimental_rerun()
+#     else:
+#         displayed_text = "".join(st.session_state.ascii_lines)
+#         placeholder.text(displayed_text)
+#         st.success("✨ Das ganze Bild ist enthüllt!")
+#         st.session_state.animating = False
+
+# def ascii_slide():
+#     try:
+#         with open("dot_art.txt", "r", encoding="utf-8") as f:
+#             ascii_lines = f.readlines()
+#     except FileNotFoundError:
+#         st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+#         return
+
+#     max_lines = len(ascii_lines)
+#     slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
+#     displayed_text = "".join(ascii_lines[:slider_val])
+#     st.text(displayed_text)
+
+#     if slider_val == max_lines:
+#         st.success("✨ Das ganze Bild ist enthüllt!")
+
 
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
@@ -138,7 +155,7 @@ def main():
     st.markdown("---")
     st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
 
-    ascii_animation()
+    ascii_slide
 
     st.markdown("---")
     st.caption("Mit ganz viel ❤️ für dich gemacht.")
