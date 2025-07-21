@@ -102,9 +102,7 @@ def run_quiz():
             st.success(f"Perfekt! Du hast alle {len(quiz)} Fragen richtig beantwortet.")
             st.info("Mache dich bereit für das Puzzle... Die Seite lädt gleich neu.")
             st.session_state.phase = "puzzle"
-            # Kurze Pause, damit der User die Nachricht lesen kann
-            st.sleep(2) 
-            st.rerun()
+            st.rerun() # Rerun immediately without sleeping
         else:
             st.error(f"Leider nur {score} von {len(quiz)} richtig. Ein echter Swiftie schafft das! Versuch es nochmal.")
 
