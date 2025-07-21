@@ -1,7 +1,6 @@
 import streamlit as st
 from PIL import Image
 import random
-import time
 
 st.set_page_config(
     page_title="🎉 Happy Birthday!",
@@ -10,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- Taylor Swift Quiz ---
+# --- Quiz Daten ---
 quiz = [
     {
         "question": "Welches Album enthält den Song 'Love Story'?",
@@ -39,34 +38,33 @@ quiz = [
     }
 ]
 
-# --- Puzzle Daten (Lückentext & Anagramme) ---
+# --- Puzzle Daten (Mischung Lückentext + Anagramm) ---
 puzzle_steps = [
-    # Lückentext: Wort in Klammern fehlt
+    # Schritt 1: Lückentext
     {
-        "type": "cloze",
-        "text": "Taylor Swift wurde im Jahr ___ geboren.",
+        "type": "fill_blank",
+        "sentence": "Taylor Swift wurde im Jahr ____ geboren.",
         "answer": "1989"
     },
-    # Anagramm: Buchstaben in zufälliger Reihenfolge
+    # Schritt 2: Anagramm
     {
         "type": "anagram",
-        "word": "Swift",
-        "scrambled": "twifs"
+        "word": "fearless",
+        "hint": "Ein Taylor Swift Album",
+        "answer": "fearless"
     },
+    # Schritt 3: Lückentext
     {
-        "type": "cloze",
-        "text": "Das Album '___' wurde 2020 überraschend veröffentlicht.",
-        "answer": "Folklore"
+        "type": "fill_blank",
+        "sentence": "Der Song 'Love Story' ist auf dem Album ____.",
+        "answer": "fearless"
     },
+    # Schritt 4: Anagramm
     {
         "type": "anagram",
-        "word": "Meredith",
-        "scrambled": "hdtiemre"
-    },
-    {
-        "type": "cloze",
-        "text": "Taylor Swifts berühmte Katze heißt ___ Grey.",
-        "answer": "Meredith"
+        "word": "midnights",
+        "hint": "Ein Taylor Swift Album, veröffentlicht 2022",
+        "answer": "midnights"
     }
 ]
 
@@ -74,119 +72,99 @@ puzzle_steps = [
 
 def run_quiz():
     st.markdown("## 🎤 Taylor Swift Quiz")
-    st.write("Beantworte alle Fragen richtig, um das nächste Level freizuschalten!")
+    st.write("Beantworte alle Fragen richtig, um zum Puzzle zu gelangen!")
 
-    if "quiz_score" not in st.session_state:
-        st.session_state.quiz_score = 0
-    if "quiz_done" not in st.session_state:
-        st.session_state.quiz_done = False
+    score = 0
+    user_answers = []
 
-    with st.form("quiz_form", clear_on_submit=False):
-        user_answers = []
+    with st.form("quiz_form"):
         for idx, q in enumerate(quiz):
-            st.markdown(f"**Frage {idx+1}:** {q['question']}")
-            ans = st.radio("", q["options"], key=f"q_{idx}")
-            user_answers.append(ans)
+            st.markdown(f"**Frage {idx + 1}:** {q['question']}")
+            user_answer = st.radio(
+                label="",
+                options=q["options"],
+                key=f"quiz_question_{idx}"
+            )
+            user_answers.append(user_answer)
         submitted = st.form_submit_button("Antworten einreichen 🎯")
 
     if submitted:
-        score = 0
         for user_ans, q in zip(user_answers, quiz):
             if user_ans == q["answer"]:
                 score += 1
-        st.session_state.quiz_score = score
-        st.session_state.quiz_done = True
-        st.success(f"Du hast {score} von {len(quiz)} Fragen richtig beantwortet.")
 
-    if st.session_state.quiz_done:
-        if st.session_state.quiz_score == len(quiz):
-            st.balloons()
-            st.success("🎉 Super! Du hast das Quiz bestanden. Weiter zum Puzzle.")
-        else:
-            st.warning("Noch nicht ganz! Versuche es nochmal, um das Puzzle freizuschalten.")
+        st.markdown("---")
+        st.success(f"Du hast **{score} von {len(quiz)}** Fragen richtig beantwortet.")
+
+        st.session_state.quiz_done = True
+        st.session_state.quiz_score = score
 
 
 def run_puzzle():
     st.markdown("## 🧩 Taylor Swift Puzzle")
-    st.write("Löse die Aufgaben Schritt für Schritt, um das Dot-Art Bild freizuschalten.")
+    st.write("Löse alle Aufgaben, um die Belohnung zu bekommen!")
 
-    if "puzzle_step" not in st.session_state:
-        st.session_state.puzzle_step = 0
-    if "puzzle_done" not in st.session_state:
-        st.session_state.puzzle_done = False
+    step = st.session_state.get("puzzle_step", 0)
+    if step >= len(puzzle_steps):
+        st.success("Du hast alle Puzzle-Aufgaben gelöst!")
+        st.session_state.puzzle_done = True
+        return
 
-    step = puzzle_steps[st.session_state.puzzle_step]
-    completed = False
-
-    if step["type"] == "cloze":
-        answer = st.text_input(
-            "Fülle die Lücke:",
-            placeholder=step["text"].replace("___", "...")
-        )
-        if st.button("Antwort prüfen"):
-            if answer.strip().lower() == step["answer"].lower():
-                st.success("Richtig!")
-                completed = True
+    current = puzzle_steps[step]
+    if current["type"] == "fill_blank":
+        user_input = st.text_input(f"Lückentext: {current['sentence']}", key=f"puzzle_fill_{step}")
+        if st.button("Antwort prüfen", key=f"check_fill_{step}"):
+            if user_input.strip().lower() == current["answer"].lower():
+                st.success("Richtig! Weiter zum nächsten Schritt.")
+                st.session_state.puzzle_step = step + 1
             else:
-                st.error("Das war leider falsch, versuche es nochmal.")
+                st.error("Leider falsch. Versuch es nochmal!")
 
-    elif step["type"] == "anagram":
-        answer = st.text_input(
-            f"Ordne die Buchstaben neu: {step['scrambled']}",
-            max_chars=len(step["word"])
-        )
-        if st.button("Antwort prüfen"):
-            if answer.strip().lower() == step["word"].lower():
-                st.success("Richtig!")
-                completed = True
+    elif current["type"] == "anagram":
+        scrambled = "".join(random.sample(current["word"], len(current["word"])))
+        st.markdown(f"**Anagramm:** {scrambled}")
+        st.markdown(f"*Hinweis: {current['hint']}*")
+        user_input = st.text_input("Löse das Anagramm:", key=f"puzzle_anagram_{step}")
+        if st.button("Antwort prüfen", key=f"check_ana_{step}"):
+            if user_input.strip().lower() == current["answer"].lower():
+                st.success("Richtig! Weiter zum nächsten Schritt.")
+                st.session_state.puzzle_step = step + 1
             else:
-                st.error("Das war leider falsch, versuche es nochmal.")
+                st.error("Leider falsch. Versuch es nochmal!")
 
-    if completed:
-        st.session_state.puzzle_step += 1
-        if st.session_state.puzzle_step >= len(puzzle_steps):
-            st.session_state.puzzle_done = True
-            st.success("🎉 Du hast alle Puzzle gelöst!")
-        else:
-            st.experimental_rerun()
-
-    if st.session_state.puzzle_done:
-        st.info("Du hast das Puzzle abgeschlossen! Weiter zur Belohnung.")
-
-def show_dotart_reward():
-    st.markdown("## 🖼️ Deine Belohnung: Dot-Art Bild")
-
-    # Bild anzeigen
+def show_dot_art():
+    st.markdown("## 🖼️ Dot Art Belohnung")
     try:
         dot_img = Image.open("dot_art.jpg")
         st.image(dot_img, caption="Aus Punkten gezaubert ✨", use_container_width=True)
     except FileNotFoundError:
-        st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
+        st.warning("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
-    # Text schrittweise mit Slider enthüllen
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
             ascii_lines = f.readlines()
     except FileNotFoundError:
         st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
-        ascii_lines = []
+        return
 
-    if ascii_lines:
-        max_lines = len(ascii_lines)
-        slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
-        displayed_text = "".join(ascii_lines[:slider_val])
-        st.text(displayed_text)
-        if slider_val == max_lines:
-            st.success("✨ Das ganze Bild ist enthüllt!")
+    max_lines = len(ascii_lines)
+    slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1, key="dot_art_slider")
+    displayed_text = "".join(ascii_lines[:slider_val])
+    st.text(displayed_text)
 
-def show_final_gift():
-    st.markdown("## 🎁 Das große Geschenk!")
+    if slider_val == max_lines:
+        st.success("✨ Das ganze Bild ist enthüllt!")
+
+def show_final_reward():
+    st.markdown("## 🎁 Finale Belohnung")
     try:
         jetski_img = Image.open("jetski.jpg")
-        st.image(jetski_img, caption="Pack den Bikini ein! 🏖️", use_container_width=True)
+        st.image(jetski_img, caption="Pack den Bikini ein!", use_container_width=True)
         st.balloons()
     except FileNotFoundError:
-        st.error("Das Geschenkbild 'jetski.jpg' wurde nicht gefunden.")
+        st.warning("Das Geschenkbild 'jetski.jpg' wurde nicht gefunden.")
+
+# --- Hauptlogik mit Phasensteuerung ---
 
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
@@ -196,7 +174,7 @@ def main():
     Taytay-Wissen könnte Dich heute weiterbringen. 🎁
     """)
 
-    # Rabbit gif unverändert laden
+    # Rabbit gif laden
     try:
         with open("rabbit.gif", "rb") as f:
             gif_bytes = f.read()
@@ -206,12 +184,40 @@ def main():
 
     st.markdown("---")
 
-    # Steuerung der Phasen
-    # if "phase" not in st.session_state:
-    #     st.session_state.phase = "quiz"
+    # Session State initialisieren
+    if "phase" not in st.session_state:
+        st.session_state.phase = "quiz"
+        st.session_state.quiz_done = False
+        st.session_state.quiz_score = 0
+        st.session_state.puzzle_step = 0
+        st.session_state.puzzle_done = False
 
-    # if st.session_state.phase == "quiz":
-    #     run_quiz()
-    #     if st.session_state.get("quiz_done", False) and st.session_state.get("quiz_score", 0) == len(quiz):
-    #         st.session_state.phase = "puzzle"
-    #         st.experimental_rer
+    # Steuerung der Phasen
+    if st.session_state.phase == "quiz":
+        run_quiz()
+        if st.session_state.quiz_done and st.session_state.quiz_score == len(quiz):
+            if st.button("Weiter zum Puzzle"):
+                st.session_state.phase = "puzzle"
+                st.experimental_rerun()
+
+    elif st.session_state.phase == "puzzle":
+        run_puzzle()
+        if st.session_state.puzzle_done:
+            if st.button("Belohnung anzeigen"):
+                st.session_state.phase = "reward"
+                st.experimental_rerun()
+
+    elif st.session_state.phase == "reward":
+        show_dot_art()
+        if st.button("Zeige finale Belohnung"):
+            st.session_state.phase = "final"
+            st.experimental_rerun()
+
+    elif st.session_state.phase == "final":
+        show_final_reward()
+
+    st.markdown("---")
+    st.caption("Du bist 🆒s.")
+
+if __name__ == "__main__":
+    main()
