@@ -109,6 +109,8 @@ def run_quiz():
 #         st.session_state.animating = False
 import time
 
+import time
+
 def ascii_slide():
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
@@ -119,38 +121,39 @@ def ascii_slide():
 
     max_lines = len(ascii_lines)
 
-    # Initialisierung von States
-    if "slider_val" not in st.session_state:
-        st.session_state.slider_val = 1
+    # Initialisieren
+    if "current_line" not in st.session_state:
+        st.session_state.current_line = 1
     if "auto_play" not in st.session_state:
         st.session_state.auto_play = False
 
-    # Button: Start der Animation
-    if st.button("▶️ Zeilen automatisch anzeigen"):
+    # Auto-Play starten
+    if st.button("▶️ Automatisch Zeilen anzeigen"):
         st.session_state.auto_play = True
 
-    # Slider: Kontrolle auch manuell möglich
-    st.session_state.slider_val = st.slider(
-        "Wie viele Zeilen möchtest du sehen?",
+    # Manuelle Kontrolle per Slider (separat)
+    slider_val = st.slider(
+        "Manuell Zeilen anzeigen",
         1,
         max_lines,
-        st.session_state.slider_val,
-        key="ascii_slider"
+        st.session_state.current_line,
+        key="ascii_manual_slider"
     )
 
-    # Textanzeige
-    displayed_text = "".join(ascii_lines[:st.session_state.slider_val])
-    st.text(displayed_text)
+    # Bei Auto-Play: automatisch Zeilen erhöhen
+    if st.session_state.auto_play:
+        if st.session_state.current_line < max_lines:
+            time.sleep(0.05)
+            st.session_state.current_line += 1
+            st.experimental_rerun()
+        else:
+            st.session_state.auto_play = False
+            st.success("✨ Das ganze Bild ist enthüllt!")
 
-    # Animation
-    if st.session_state.auto_play and st.session_state.slider_val < max_lines:
-        time.sleep(0.05)
-        st.session_state.slider_val += 1
-        st.experimental_rerun()
-    elif st.session_state.slider_val == max_lines:
-        st.session_state.auto_play = False
-        st.success("✨ Das ganze Bild ist enthüllt!")
-
+    # Anzeige entsprechend aktueller Linie (manuell oder auto)
+    displayed_lines = min(slider_val, st.session_state.current_line)
+    displayed_text = "".join(ascii_lines[:displayed_lines])
+    st.code(displayed_text, language="")
 
 
 def main():
