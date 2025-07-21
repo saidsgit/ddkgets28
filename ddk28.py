@@ -119,6 +119,8 @@ def puzzle_step():
         st.session_state.step = 0
     if "lines_revealed" not in st.session_state:
         st.session_state.lines_revealed = 0
+    if "answer_checked" not in st.session_state:
+        st.session_state.answer_checked = False
 
     dot_art_lines = load_dot_art()
     max_steps = len(puzzle_tasks)
@@ -134,24 +136,27 @@ def puzzle_step():
     st.markdown(f"### Aufgabe {st.session_state.step + 1} von {max_steps}")
 
     if task["type"] == "cloze":
-        # Lückentext mit Eingabefeld
         text_display = task["text"].replace("___", "_____")
         st.write(text_display)
         user_ans = st.text_input("Fülle die Lücke mit dem richtigen Wort:", key="input_cloze")
     else:
-        # Anagramm
         st.write(task["text"])
         user_ans = st.text_input("Entschlüssle das Anagramm und gib das richtige Wort ein:", key="input_anagram")
 
     if st.button("Antwort prüfen"):
         if user_ans.strip().lower() == task["answer"].lower():
-            st.success("Richtig! Eine weitere Zeile wird enthüllt.")
-            st.session_state.step += 1
-            st.session_state.lines_revealed += 1
-            # Seite neuladen, damit neue Aufgabe gezeigt wird
-            st.experimental_rerun()
+            st.session_state.answer_checked = True
         else:
+            st.session_state.answer_checked = False
             st.error("Leider falsch, versuche es nochmal.")
+
+    # Antwortauswertung außerhalb des Buttons:
+    if st.session_state.get("answer_checked"):
+        st.success("Richtig! Eine weitere Zeile wird enthüllt.")
+        st.session_state.step += 1
+        st.session_state.lines_revealed += 1
+        st.session_state.answer_checked = False  # Reset für nächsten Schritt
+        st.experimental_rerun()
 
     if dot_art_lines and st.session_state.lines_revealed > 0:
         st.markdown("### Dein Dot-Art Bild wird enthüllt:")
