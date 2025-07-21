@@ -67,12 +67,11 @@ def run_quiz():
             st.markdown("## 🎁 Glückwunsch!")
             st.markdown("Du hast alles richtig beantwortet und dein Geschenk ist...")
 
-            st.markdown("### 🌊 **Eine Jetskifahrt!** 🏄‍♀️")
             try:
-                gift_img = Image.open("jetski_geschenk.gif")
-                st.image(gift_img, caption="Pack den Bikini ein!")
+                jetski_img = Image.open("jetski.jpg")
+                st.image(jetski_img, caption="Pack den Bikini ein!", use_container_width=True)
             except FileNotFoundError:
-                st.image("https://media.giphy.com/media/3o6Zt8MgUuvSbkZYWc/giphy.gif", caption="Pack den Bikini ein!")
+                st.warning("Das Geschenkbild 'jetski.jpg' wurde nicht gefunden.")
 
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
@@ -86,10 +85,10 @@ def main():
     """)
 
     try:
-        jetski_img = Image.open("jetski.jpg")
-        st.image(jetski_img, caption="Taylor sagt: Viel Glück!", use_container_width=True)
+        rabbit_gif = Image.open("rabbit.gif")
+        st.image(rabbit_gif, caption="Taylor sagt: Viel Glück!", use_container_width=True)
     except FileNotFoundError:
-        st.error("Das Bild 'jetski.jpg' wurde nicht gefunden. Bitte im Projektordner ablegen.")
+        st.error("Das Bild 'rabbit.gif' wurde nicht gefunden. Bitte im Projektordner ablegen.")
 
     st.markdown("---")
     run_quiz()
