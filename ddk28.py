@@ -123,8 +123,6 @@ def puzzle_step():
         st.session_state.lines_revealed = 0
     if "answer_correct" not in st.session_state:
         st.session_state.answer_correct = False
-    if "do_rerun" not in st.session_state:
-        st.session_state.do_rerun = False
 
     dot_art_lines = load_dot_art()
     max_steps = len(puzzle_tasks)
@@ -152,7 +150,7 @@ def puzzle_step():
             st.session_state.answer_correct = True
             st.session_state.step += 1
             st.session_state.lines_revealed += 1
-            st.session_state.do_rerun = True  # Flag setzen
+            # kein st.experimental_rerun() mehr!
         else:
             st.session_state.answer_correct = False
             st.error("Leider falsch, versuche es nochmal.")
@@ -163,12 +161,6 @@ def puzzle_step():
     if dot_art_lines and st.session_state.lines_revealed > 0:
         st.markdown("### Dein Dot-Art Bild wird enthüllt:")
         st.text("".join(dot_art_lines[:st.session_state.lines_revealed]))
-
-    # Rerun ganz am Ende einmal ausführen, wenn Flag gesetzt
-    if st.session_state.get("do_rerun", False):
-        st.session_state.do_rerun = False
-        st.experimental_rerun()
-
 
 
 def main():
