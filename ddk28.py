@@ -1,10 +1,6 @@
 import streamlit as st
 from PIL import Image
-import time
 
-# ------------------------------
-# App-Konfiguration
-# ------------------------------
 st.set_page_config(
     page_title="🎉 Happy Birthday!",
     page_icon="🎂",
@@ -12,9 +8,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ------------------------------
-# Quiz-Daten
-# ------------------------------
 quiz = [
     {
         "question": "Welches Album enthält den Song 'Love Story'?",
@@ -43,9 +36,6 @@ quiz = [
     }
 ]
 
-# ------------------------------
-# Quiz-Funktion
-# ------------------------------
 def run_quiz():
     st.markdown("## 🎤 Taylor Swift Quiz")
     st.write("Beantworte alle Fragen richtig, um dein Geburtstagsgeheimnis zu enthüllen!")
@@ -78,14 +68,15 @@ def run_quiz():
             st.markdown("Du hast alles richtig beantwortet und dein Geschenk ist...")
 
             st.markdown("### 🌊 **Eine Jetskifahrt!** 🏄‍♀️")
-            st.image("https://media.giphy.com/media/3o6Zt8MgUuvSbkZYWc/giphy.gif", caption="Pack den Bikini ein!")
+            try:
+                gift_img = Image.open("jetski_geschenk.gif")
+                st.image(gift_img, caption="Pack den Bikini ein!")
+            except FileNotFoundError:
+                st.image("https://media.giphy.com/media/3o6Zt8MgUuvSbkZYWc/giphy.gif", caption="Pack den Bikini ein!")
 
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
-# ------------------------------
-# Hauptfunktion der App
-# ------------------------------
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
     st.markdown("""
@@ -94,7 +85,11 @@ def main():
     Wenn du alles richtig beantwortest, erwartet dich eine kleine Überraschung 🎁
     """)
 
-    st.image("https://i.imgur.com/N1zLfUQ.jpg", caption="Taylor sagt: Viel Glück!")
+    try:
+        jetski_img = Image.open("jetski.jpg")
+        st.image(jetski_img, caption="Taylor sagt: Viel Glück!", use_container_width=True)
+    except FileNotFoundError:
+        st.error("Das Bild 'jetski.jpg' wurde nicht gefunden. Bitte im Projektordner ablegen.")
 
     st.markdown("---")
     run_quiz()
@@ -103,34 +98,40 @@ def main():
     st.markdown("## 🖼️ Dein persönliches Dot-Art-Bild")
 
     try:
-        dot_img = Image.open("dot_art.jpg")  # Pfad zu deinem Dot-Art Bild
-        st.image(dot_img, caption="Aus Punkten gezaubert ✨", use_column_width=True)
+        dot_img = Image.open("dot_art.jpg")
+        st.image(dot_img, caption="Aus Punkten gezaubert ✨", use_container_width=True)
     except FileNotFoundError:
         st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
     st.markdown("---")
     st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
 
-    with st.expander("👀 Enthülle das Geheimnis – Zeile für Zeile..."):
+    if "ascii_lines" not in st.session_state:
         try:
             with open("dot_art.txt", "r", encoding="utf-8") as f:
-                ascii_lines = f.readlines()
-
-            display = st.empty()
-            revealed_text = ""
-            for line in ascii_lines:
-                revealed_text += line
-                display.text(revealed_text)
-                time.sleep(0.05)  # Geschwindigkeit der Enthüllung, anpassbar
-
+                st.session_state.ascii_lines = f.readlines()
         except FileNotFoundError:
             st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+            st.session_state.ascii_lines = []
+
+    if "line_index" not in st.session_state:
+        st.session_state.line_index = 0
+
+    with st.expander("👀 Enthülle das Geheimnis – Zeile für Zeile..."):
+        if st.session_state.ascii_lines:
+            placeholder = st.empty()
+            displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
+            placeholder.text(displayed_text)
+
+            if st.session_state.line_index < len(st.session_state.ascii_lines):
+                if st.button("Nächste Zeile zeigen ▶️"):
+                    st.session_state.line_index += 1
+                    st.experimental_rerun()
+            else:
+                st.success("✨ Das ganze Bild ist enthüllt!")
 
     st.markdown("---")
     st.caption("Mit ganz viel ❤️ für dich gemacht.")
 
-# ------------------------------
-# Programmstart
-# ------------------------------
 if __name__ == "__main__":
     main()
