@@ -129,10 +129,11 @@ def show_final_reward():
 # === MAIN ===
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
-    st.markdown("Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
+    st.markdown("""
+    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
     
-    Taytay-Wissen könnte Dich heute weiterbringen. 🎁")
-
+    Taytay-Wissen könnte Dich heute weiterbringen. 🎁
+    """)
     try:
         st.image("rabbit.gif", caption="Taylor sagt: Viel Glück!", use_container_width=True)
     except FileNotFoundError:
