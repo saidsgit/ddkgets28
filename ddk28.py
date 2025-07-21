@@ -120,8 +120,7 @@ def run_puzzle():
         st.success("Fantastisch! Du hast alle Puzzle-Aufgaben gelöst!")
         st.info("Deine Belohnung wird vorbereitet...")
         st.session_state.phase = "reward"
-        st.sleep(2)
-        st.rerun()
+        st.rerun() # Direkt neustarten, ohne zu warten
         return
 
     current = puzzle_steps[step]
