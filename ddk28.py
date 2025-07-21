@@ -36,44 +36,6 @@ quiz = [
     }
 ]
 
-# Puzzle-Aufgaben: Mix aus Lückentext und Anagramm
-puzzle_tasks = [
-    {
-        "type": "cloze",
-        "text": "I knew you were ___ when you walked in.",
-        "answer": "trouble"
-    },
-    {
-        "type": "anagram",
-        "text": "Löse das Anagramm: 'tyros'",
-        "answer": "story"
-    },
-    {
-        "type": "cloze",
-        "text": "This is a love ___, baby, just say yes.",
-        "answer": "story"
-    },
-    {
-        "type": "anagram",
-        "text": "Löse das Anagramm: 'ffo'",
-        "answer": "off"
-    },
-    {
-        "type": "cloze",
-        "text": "You belong with ___, can't you see?",
-        "answer": "me"
-    }
-]
-
-def load_dot_art():
-    try:
-        with open("dot_art.txt", "r", encoding="utf-8") as f:
-            lines = f.readlines()
-        return lines
-    except FileNotFoundError:
-        st.warning("Dot-Art Textdatei 'dot_art.txt' nicht gefunden. Bitte ins Projektverzeichnis legen.")
-        return []
-
 def run_quiz():
     st.markdown("## 🎤 Taylor Swift Quiz")
     st.write("Beantworte alle Fragen richtig, um dein Geburtstagsgeheimnis zu enthüllen!")
@@ -114,13 +76,53 @@ def run_quiz():
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
+
+# Puzzle mit Lückentext und Anagrammen gemischt
+
+puzzle_tasks = [
+    {
+        "type": "cloze",
+        "text": "Taylor Swift wurde im Jahr ___ geboren.",
+        "answer": "1989"
+    },
+    {
+        "type": "anagram",
+        "text": "Anagramm: OYATL",
+        "answer": "taylor"
+    },
+    {
+        "type": "cloze",
+        "text": "Das Album ___ enthält den Song 'Love Story'.",
+        "answer": "fearless"
+    },
+    {
+        "type": "anagram",
+        "text": "Anagramm: SHEAREN",
+        "answer": "sheeran"
+    },
+    {
+        "type": "cloze",
+        "text": "Taylors Katze heißt ___ Grey.",
+        "answer": "meredith"
+    }
+]
+
+def load_dot_art():
+    try:
+        with open("dot_art.txt", "r", encoding="utf-8") as f:
+            return f.readlines()
+    except FileNotFoundError:
+        st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+        return None
+
+
 def puzzle_step():
     if "step" not in st.session_state:
         st.session_state.step = 0
     if "lines_revealed" not in st.session_state:
         st.session_state.lines_revealed = 0
-    if "answer_checked" not in st.session_state:
-        st.session_state.answer_checked = False
+    if "answer_correct" not in st.session_state:
+        st.session_state.answer_correct = False
 
     dot_art_lines = load_dot_art()
     max_steps = len(puzzle_tasks)
@@ -143,24 +145,26 @@ def puzzle_step():
         st.write(task["text"])
         user_ans = st.text_input("Entschlüssle das Anagramm und gib das richtige Wort ein:", key="input_anagram")
 
+    # Button prüfen
     if st.button("Antwort prüfen"):
         if user_ans.strip().lower() == task["answer"].lower():
-            st.session_state.answer_checked = True
+            st.session_state.answer_correct = True
         else:
-            st.session_state.answer_checked = False
+            st.session_state.answer_correct = False
             st.error("Leider falsch, versuche es nochmal.")
 
-    # Antwortauswertung außerhalb des Buttons:
-    if st.session_state.get("answer_checked"):
+    # Hier **außerhalb** des button-blocks** rerun nur bei richtigem Ergebnis
+    if st.session_state.answer_correct:
         st.success("Richtig! Eine weitere Zeile wird enthüllt.")
         st.session_state.step += 1
         st.session_state.lines_revealed += 1
-        st.session_state.answer_checked = False  # Reset für nächsten Schritt
+        st.session_state.answer_correct = False  # reset für nächste Aufgabe
         st.experimental_rerun()
 
     if dot_art_lines and st.session_state.lines_revealed > 0:
         st.markdown("### Dein Dot-Art Bild wird enthüllt:")
         st.text("".join(dot_art_lines[:st.session_state.lines_revealed]))
+
 
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
@@ -190,7 +194,7 @@ def main():
         st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
     st.markdown("---")
-    st.markdown("## 💬 Bonus-Level: Puzzle aus Lückentext und Anagrammen")
+    st.markdown("## 💬 Bonus-Level")
 
     puzzle_step()
 
