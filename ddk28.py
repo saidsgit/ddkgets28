@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-import time
 
 st.set_page_config(
     page_title="🎉 Happy Birthday!",
@@ -36,6 +35,44 @@ quiz = [
         "answer": "1989"
     }
 ]
+
+# Puzzle-Aufgaben: Mix aus Lückentext und Anagramm
+puzzle_tasks = [
+    {
+        "type": "cloze",
+        "text": "I knew you were ___ when you walked in.",
+        "answer": "trouble"
+    },
+    {
+        "type": "anagram",
+        "text": "Löse das Anagramm: 'tyros'",
+        "answer": "story"
+    },
+    {
+        "type": "cloze",
+        "text": "This is a love ___, baby, just say yes.",
+        "answer": "story"
+    },
+    {
+        "type": "anagram",
+        "text": "Löse das Anagramm: 'ffo'",
+        "answer": "off"
+    },
+    {
+        "type": "cloze",
+        "text": "You belong with ___, can't you see?",
+        "answer": "me"
+    }
+]
+
+def load_dot_art():
+    try:
+        with open("dot_art.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        return lines
+    except FileNotFoundError:
+        st.warning("Dot-Art Textdatei 'dot_art.txt' nicht gefunden. Bitte ins Projektverzeichnis legen.")
+        return []
 
 def run_quiz():
     st.markdown("## 🎤 Taylor Swift Quiz")
@@ -77,57 +114,48 @@ def run_quiz():
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
-# def ascii_animation():
-#     if "ascii_lines" not in st.session_state:
-#         try:
-#             with open("dot_art.txt", "r", encoding="utf-8") as f:
-#                 st.session_state.ascii_lines = f.readlines()
-#         except FileNotFoundError:
-#             st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
-#             st.session_state.ascii_lines = []
+def puzzle_step():
+    if "step" not in st.session_state:
+        st.session_state.step = 0
+    if "lines_revealed" not in st.session_state:
+        st.session_state.lines_revealed = 0
 
-#     # Initialisiere die Variablen, falls nicht vorhanden
-#     if "line_index" not in st.session_state:
-#         st.session_state.line_index = 0
-#     if "animating" not in st.session_state:
-#         st.session_state.animating = True
+    dot_art_lines = load_dot_art()
+    max_steps = len(puzzle_tasks)
 
-#     placeholder = st.empty()
-
-#     if st.session_state.animating and st.session_state.line_index < len(st.session_state.ascii_lines):
-#         displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
-#         placeholder.text(displayed_text)
-
-#         st.session_state.line_index += 1
-
-#         time.sleep(0.2)
-#         st.experimental_rerun()
-#     else:
-#         displayed_text = "".join(st.session_state.ascii_lines)
-#         placeholder.text(displayed_text)
-#         st.success("✨ Das ganze Bild ist enthüllt!")
-#         st.session_state.animating = False
-import time
-
-import time
-
-def ascii_slide():
-    try:
-        with open("dot_art.txt", "r", encoding="utf-8") as f:
-            ascii_lines = f.readlines()
-    except FileNotFoundError:
-        st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+    if st.session_state.step >= max_steps:
+        st.success("🎉 Du hast alle Aufgaben gelöst und das ganze Bild enthüllt!")
+        if dot_art_lines:
+            st.text("".join(dot_art_lines))
         return
 
-    max_lines = len(ascii_lines)
-    slider_val = st.slider("Wie viele Zeilen möchtest du sehen?", 1, max_lines, 1)
-    displayed_text = "".join(ascii_lines[:slider_val])
-    st.text(displayed_text)
+    task = puzzle_tasks[st.session_state.step]
 
-    if slider_val == max_lines:
-        st.success("✨ Das ganze Bild ist enthüllt!")
+    st.markdown(f"### Aufgabe {st.session_state.step + 1} von {max_steps}")
 
+    if task["type"] == "cloze":
+        # Lückentext mit Eingabefeld
+        text_display = task["text"].replace("___", "_____")
+        st.write(text_display)
+        user_ans = st.text_input("Fülle die Lücke mit dem richtigen Wort:", key="input_cloze")
+    else:
+        # Anagramm
+        st.write(task["text"])
+        user_ans = st.text_input("Entschlüssle das Anagramm und gib das richtige Wort ein:", key="input_anagram")
 
+    if st.button("Antwort prüfen"):
+        if user_ans.strip().lower() == task["answer"].lower():
+            st.success("Richtig! Eine weitere Zeile wird enthüllt.")
+            st.session_state.step += 1
+            st.session_state.lines_revealed += 1
+            # Seite neuladen, damit neue Aufgabe gezeigt wird
+            st.experimental_rerun()
+        else:
+            st.error("Leider falsch, versuche es nochmal.")
+
+    if dot_art_lines and st.session_state.lines_revealed > 0:
+        st.markdown("### Dein Dot-Art Bild wird enthüllt:")
+        st.text("".join(dot_art_lines[:st.session_state.lines_revealed]))
 
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
@@ -157,9 +185,9 @@ def main():
         st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
     st.markdown("---")
-    st.markdown("## 💬 Bonus-Level")
+    st.markdown("## 💬 Bonus-Level: Puzzle aus Lückentext und Anagrammen")
 
-    ascii_slide()
+    puzzle_step()
 
     st.markdown("---")
     st.caption("Du bist 🆒s.")
