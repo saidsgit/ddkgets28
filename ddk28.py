@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+import time
 
 st.set_page_config(
     page_title="🎉 Happy Birthday!",
@@ -76,6 +77,33 @@ def run_quiz():
         else:
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
+def ascii_animation():
+    if "ascii_lines" not in st.session_state:
+        try:
+            with open("dot_art.txt", "r", encoding="utf-8") as f:
+                st.session_state.ascii_lines = f.readlines()
+        except FileNotFoundError:
+            st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+            st.session_state.ascii_lines = []
+        st.session_state.line_index = 0
+        st.session_state.animating = True
+
+    placeholder = st.empty()
+
+    if st.session_state.animating and st.session_state.line_index < len(st.session_state.ascii_lines):
+        displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
+        placeholder.text(displayed_text)
+
+        st.session_state.line_index += 1
+
+        time.sleep(0.2)
+        st.experimental_rerun()
+    else:
+        displayed_text = "".join(st.session_state.ascii_lines)
+        placeholder.text(displayed_text)
+        st.success("✨ Das ganze Bild ist enthüllt!")
+        st.session_state.animating = False
+
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
     st.markdown("""
@@ -85,8 +113,9 @@ def main():
     """)
 
     try:
-        rabbit_gif = Image.open("rabbit.gif")
-        st.image(rabbit_gif, caption="Taylor sagt: Viel Glück!", use_container_width=True)
+        with open("rabbit.gif", "rb") as f:
+            gif_bytes = f.read()
+        st.image(gif_bytes, caption="Taylor sagt: Viel Glück!", use_container_width=True)
     except FileNotFoundError:
         st.error("Das Bild 'rabbit.gif' wurde nicht gefunden. Bitte im Projektordner ablegen.")
 
@@ -105,29 +134,7 @@ def main():
     st.markdown("---")
     st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
 
-    if "ascii_lines" not in st.session_state:
-        try:
-            with open("dot_art.txt", "r", encoding="utf-8") as f:
-                st.session_state.ascii_lines = f.readlines()
-        except FileNotFoundError:
-            st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
-            st.session_state.ascii_lines = []
-
-    if "line_index" not in st.session_state:
-        st.session_state.line_index = 0
-
-    with st.expander("👀 Enthülle das Geheimnis – Zeile für Zeile..."):
-        if st.session_state.ascii_lines:
-            placeholder = st.empty()
-            displayed_text = "".join(st.session_state.ascii_lines[:st.session_state.line_index])
-            placeholder.text(displayed_text)
-
-            if st.session_state.line_index < len(st.session_state.ascii_lines):
-                if st.button("Nächste Zeile zeigen ▶️"):
-                    st.session_state.line_index += 1
-                    st.experimental_rerun()
-            else:
-                st.success("✨ Das ganze Bild ist enthüllt!")
+    ascii_animation()
 
     st.markdown("---")
     st.caption("Mit ganz viel ❤️ für dich gemacht.")
