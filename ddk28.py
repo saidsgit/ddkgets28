@@ -197,9 +197,11 @@ def show_final_reward():
 
 def main():
     st.markdown("<h1 style='text-align: center;'>🎂 Happy Birthday, Lieblingsmensch!</h1>", unsafe_allow_html=True)
-    st.markdown("### Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
+    st.markdown("""
+    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
     
-    Taytay-Wissen könnte Dich heute weiterbringen. 🎁")
+    Taytay-Wissen könnte Dich heute weiterbringen. 🎁
+    """)
 
     try:
         st.image("rabbit.gif", caption="🐰 Viel Glück wünscht dir Taylor!", use_container_width=True)
