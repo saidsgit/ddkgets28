@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+import time
 
 # ------------------------------
 # App-Konfiguration
@@ -43,7 +44,7 @@ quiz = [
 ]
 
 # ------------------------------
-# Funktionen
+# Quiz-Funktion
 # ------------------------------
 def run_quiz():
     st.markdown("## 🎤 Taylor Swift Quiz")
@@ -83,7 +84,7 @@ def run_quiz():
             st.warning("Noch nicht ganz! Versuche es nochmal, um das Geheimnis zu lüften.")
 
 # ------------------------------
-# Seiteninhalt
+# Hauptfunktion der App
 # ------------------------------
 def main():
     st.title("🎂 Happy Birthday, Lieblingsmensch!")
@@ -99,18 +100,37 @@ def main():
     run_quiz()
 
     st.markdown("---")
-    st.markdown("## 🖼️ Dein persönliches Punktbild")
+    st.markdown("## 🖼️ Dein persönliches Dot-Art-Bild")
+
     try:
-        dot_img = Image.open("dot_art.png")
-        st.image(dot_img, caption="Kunst aus Punkten – nur für dich!", use_column_width=True)
+        dot_img = Image.open("dot_art.jpg")  # Pfad zu deinem Dot-Art Bild
+        st.image(dot_img, caption="Aus Punkten gezaubert ✨", use_column_width=True)
     except FileNotFoundError:
-        st.error("Dot Art Bild nicht gefunden. Stelle sicher, dass 'dot_art.png' im selben Ordner liegt.")
+        st.error("Dot-Art Bild (.jpg) nicht gefunden. Lege 'dot_art.jpg' in den Projektordner.")
 
     st.markdown("---")
-    st.caption("Mit ganz viel ❤️ gemacht.")
+    st.markdown("## 💬 Bonus: ASCII-Dot-Art Enthüllung")
+
+    with st.expander("👀 Enthülle das Geheimnis – Zeile für Zeile..."):
+        try:
+            with open("dot_art.txt", "r", encoding="utf-8") as f:
+                ascii_lines = f.readlines()
+
+            display = st.empty()
+            revealed_text = ""
+            for line in ascii_lines:
+                revealed_text += line
+                display.text(revealed_text)
+                time.sleep(0.05)  # Geschwindigkeit der Enthüllung, anpassbar
+
+        except FileNotFoundError:
+            st.warning("Dot-Art Textdatei nicht gefunden. Lege 'dot_art.txt' in den Projektordner.")
+
+    st.markdown("---")
+    st.caption("Mit ganz viel ❤️ für dich gemacht.")
 
 # ------------------------------
-# Start
+# Programmstart
 # ------------------------------
 if __name__ == "__main__":
     main()
