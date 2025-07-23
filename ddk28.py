@@ -177,7 +177,7 @@ def show_dot_slider_and_question():
     if val == len(lines):
         st.success("📃 Selbst als Text bist Du cools!")
         year = st.text_input("Von wann ist das Bild?", key="art_year")
-        if year.strip() == "2018":
+        if year.strip() == "2019":
             if st.button("🎁 Zur finalen Überraschung"):
                 st.session_state.phase = "final"
                 st.rerun()
