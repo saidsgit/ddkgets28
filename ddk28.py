@@ -228,6 +228,9 @@ def main():
     elif phase == "final":
         show_final_reward()
 
+    st.markdown("---")
+    st.caption("Du bist das ❤️")
+
     try:
         st.markdown(
             """
@@ -237,9 +240,8 @@ def main():
             """,
             unsafe_allow_html=True
         )
-    except:
-        pass
-
+    except Exception as e:
+        st.write(f"Fehler beim Laden des GIFs: {e}")
 
 if __name__ == "__main__":
     main()
