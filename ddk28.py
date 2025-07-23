@@ -98,7 +98,7 @@ def run_quiz():
 def show_interlude():
     try:
         with open("sponge2.gif", "rb") as f:
-            st.image(f.read(), caption="🧽 SpongeBob ist bereit!", use_container_width=True)
+            st.image(f.read(), caption="🧽 Ooooooooooooohh", use_container_width=True)
     except FileNotFoundError:
         st.warning("sponge2.gif nicht gefunden.")
     st.markdown("### 🧽 Seid ihr bereit, Kinder?")
@@ -140,7 +140,7 @@ def run_puzzle_all():
             st.rerun()
 
 def show_reward_image_with_audio():
-    st.markdown("## 🖼️ Belohnung 1")
+    st.markdown("## 🖼️ Schönheit auf den Punkt gebracht")
     try:
         dot_img = Image.open("dot_art.jpg")
         st.image(dot_img, caption="✨ Dot Art erscheint...", use_container_width=True)
@@ -159,7 +159,7 @@ def show_reward_image_with_audio():
         st.rerun()
 
 def show_dot_slider_and_question():
-    st.markdown("## 🧩 Enthülle das Kunstwerk")
+    st.markdown("## 📃 Du bist das! Es ist nur Text? Aber Du bist das!")
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
             lines = f.readlines()
@@ -170,7 +170,7 @@ def show_dot_slider_and_question():
         return
 
     if val == len(lines):
-        st.success("🎇 Alles enthüllt!")
+        st.success("📃 Selbst als Text bist Du cools!")
         year = st.text_input("Von wann ist das Bild?", key="art_year")
         if year.strip() == "2018":
             if st.button("🎁 Zur finalen Überraschung"):
@@ -178,13 +178,13 @@ def show_dot_slider_and_question():
                 st.rerun()
 
 def show_final_reward():
-    st.markdown("## 🏆 Finale Belohnung")
+    st.markdown("## 🏆 Hiieeeer kommt DDKs superdupercooles DDK-wird-28-Geburtstagstag-Geschenk von Mr. DK für Mrs. DK")
     st.balloons()
-    st.success("💖 Du hast alles geschafft!")
+    st.success("💖 Geschafft!")
 
     try:
         jetski_img = Image.open("jetski.jpg")
-        st.image(jetski_img, caption="🚤 Jetski-Zeit! Happy Birthday!!", use_container_width=True)
+        st.image(jetski_img, caption="🚤 Ist das ein Jetski? JA, das ist ein Jetski!\nKaufen wir also endich ein Jetski?? Nein!\nAber im Mittelmeer eine Runde cruisen ist auch nicht verkehrt😎 Happy Birthday ❤️", use_container_width=True)
     except FileNotFoundError:
         st.warning("jetski.jpg fehlt.")
 
@@ -194,7 +194,7 @@ def show_final_reward():
     except FileNotFoundError:
         pass
 
-    if st.button("🔁 Nochmal spielen"):
+    if st.button("🔁 Grüßee. ZURÜCK."):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
@@ -202,13 +202,11 @@ def show_final_reward():
 def main():
     st.markdown("<h1 style='text-align: center;'>🎂 Happy Birthday, Lieblingsmensch!</h1>", unsafe_allow_html=True)
     st.markdown("""
-    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!
-    
-    Taytay-Wissen könnte Dich heute weiterbringen. 🎁
+    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!🎁
     """)
 
     try:
-        st.image("rabbit.gif", caption="🐰 Viel Glück wünscht dir Taylor!", use_container_width=True)
+        st.image("rabbit.gif", caption="🐰", use_container_width=True)
     except FileNotFoundError:
         st.warning("rabbit.gif nicht gefunden.")
 
@@ -231,7 +229,7 @@ def main():
         show_final_reward()
 
     st.markdown("---")
-    st.caption("🎈 Mit Liebe gemacht für dich 🎈")
+    st.caption("Du bist das ❤️")
 
 if __name__ == "__main__":
     main()
