@@ -82,7 +82,7 @@ def run_quiz():
         
         submitted = st.form_submit_button("🎯 Einreichen")
         try:
-            with open("jetski2.gif", "rb") as f:
+            with open("sponge1.gif", "rb") as f:
                 st.image(f.read(), caption="", use_container_width=True)
         except FileNotFoundError:
             pass
