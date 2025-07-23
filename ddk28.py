@@ -159,7 +159,7 @@ def show_reward_image_with_audio():
         st.warning("Aufzeichnung.m4a nicht gefunden.")
 
     answer = st.text_input("Wie viele Pflanzen sind in unserer Wohnung?", key="plants")
-    if st.button("Weiter") and answer.strip() == "16":
+    if st.button("Weiter") and answer.strip() == "17":
         st.session_state.phase = "dot_slider"
         st.rerun()
 
