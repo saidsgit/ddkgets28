@@ -64,7 +64,6 @@ puzzle_steps = [
     }
 ]
 
-
 def run_quiz():
     st.markdown("## 💡 Taylor Swift Quiz")
     st.markdown("**Beweise dein TayTay-Wissen!** 🎶")
@@ -91,86 +90,92 @@ def run_quiz():
         if score == len(quiz):
             st.balloons()
             st.success(f"🎉 Perfekt! Alle {len(quiz)} Fragen richtig beantwortet.")
-
-            try:
-                with open("sponge1.gif", "rb") as f:
-                    st.image(f.read(), caption="SpongeBob ist stolz auf dich! 🧽", use_container_width=True)
-            except FileNotFoundError:
-                st.info("Sponge1.gif nicht gefunden. Weiter geht's trotzdem!")
-
-            st.info("Weiter geht’s zum Puzzle...")
-            st.session_state.phase = "puzzle"
+            st.session_state.phase = "interlude"
             st.rerun()
         else:
             st.error(f"😢 Nur {score} von {len(quiz)} richtig. Versuch es nochmal!")
 
-
-def run_puzzle():
-    st.markdown("## 🧩 Puzzle-Zeit!")
-    st.write("🔐 Löse die Aufgaben, um Belohnungen zu verdienen!")
-
-    step = st.session_state.puzzle_step
-    if step >= len(puzzle_steps):
-        st.success("🎊 Alle Puzzle gelöst! Bereit für die Belohnung?")
-        st.session_state.phase = "reward"
+def show_interlude():
+    try:
+        with open("sponge2.gif", "rb") as f:
+            st.image(f.read(), caption="🧽 SpongeBob ist bereit!", use_container_width=True)
+    except FileNotFoundError:
+        st.warning("sponge2.gif nicht gefunden.")
+    st.markdown("### 🧽 Seid ihr bereit, Kinder?")
+    if st.button("Aye aye, Captain!"):
+        st.session_state.phase = "puzzle_all"
         st.rerun()
-        return
 
-    current = puzzle_steps[step]
-    st.markdown(f"---\n### Aufgabe {step + 1} von {len(puzzle_steps)}")
+def run_puzzle_all():
+    st.markdown("## 🧩 Alle Puzzle auf einmal!")
+    st.write("🔐 Fülle alle Felder korrekt aus, um weiterzukommen.")
 
-    with st.form(key=f"puzzle_form_{step}"):
-        user_input = ""
-        if current["type"] == "fill_blank":
-            st.markdown(f"**📝 Vervollständige:** `{current['sentence']}`")
-            user_input = st.text_input("Deine Antwort:", key=f"puzzle_fill_{step}")
-        elif current["type"] == "anagram":
-            scrambled_key = f"scrambled_{step}"
-            if scrambled_key not in st.session_state:
-                st.session_state[scrambled_key] = "".join(random.sample(current["word"], len(current["word"])))
-            scrambled = st.session_state[scrambled_key]
-            st.markdown(f"**🔀 Anagramm:** `{scrambled}`")
-            st.markdown(f"*Hinweis: {current['hint']}*")
-            user_input = st.text_input("Löse das Anagramm:", key=f"puzzle_anagram_{step}")
-        
+    all_correct = True
+    user_inputs = []
+    with st.form("puzzle_all_form"):
+        for idx, current in enumerate(puzzle_steps):
+            st.markdown(f"### Aufgabe {idx + 1}")
+            if current["type"] == "fill_blank":
+                st.markdown(f"📝 `{current['sentence']}`")
+                ans = st.text_input("Antwort:", key=f"puzzle_all_fill_{idx}")
+            elif current["type"] == "anagram":
+                scrambled_key = f"puzzle_all_scrambled_{idx}"
+                if scrambled_key not in st.session_state:
+                    st.session_state[scrambled_key] = "".join(random.sample(current["word"], len(current["word"])))
+                st.markdown(f"🔀 `{st.session_state[scrambled_key]}`")
+                st.markdown(f"*Hinweis: {current['hint']}*")
+                ans = st.text_input("Löse das Anagramm:", key=f"puzzle_all_anagram_{idx}")
+            user_inputs.append(ans)
+
         submitted = st.form_submit_button("✅ Prüfen")
-        if submitted:
-            if user_input.strip().lower() == current["answer"].lower():
-                st.success("✔️ Korrekt!")
-                st.session_state.puzzle_step += 1
-                st.rerun()
-            else:
-                st.error("❌ Leider falsch. Versuch es nochmal.")
 
+    if submitted:
+        for idx, (user_input, current) in enumerate(zip(user_inputs, puzzle_steps)):
+            if user_input.strip().lower() != current["answer"].lower():
+                all_correct = False
+                st.error(f"❌ Aufgabe {idx+1} ist falsch.")
+        if all_correct:
+            st.success("✔️ Alle Aufgaben korrekt!")
+            st.session_state.phase = "reward_image"
+            st.rerun()
 
-def show_dot_art():
-    st.markdown("## 🎨 Deine Belohnung – Dot Art")
-    st.write("🧁 Mit jedem Schritt enthüllst du mehr vom Kunstwerk!")
-
+def show_reward_image_with_audio():
+    st.markdown("## 🖼️ Belohnung 1")
     try:
         dot_img = Image.open("dot_art.jpg")
-        st.image(dot_img, caption="Magisches Punktebild ✨", use_container_width=True)
+        st.image(dot_img, caption="✨ Dot Art erscheint...", use_container_width=True)
     except FileNotFoundError:
-        st.warning("Bild 'dot_art.jpg' nicht gefunden.")
+        st.warning("dot_art.jpg fehlt.")
 
+    try:
+        audio_file = open("Aufzeichnung.m4a", "rb")
+        st.audio(audio_file.read(), format='audio/mp3')
+    except FileNotFoundError:
+        st.warning("Aufzeichnung.m4a nicht gefunden.")
+
+    answer = st.text_input("Wie viele Pflanzen sind in unserer Wohnung?", key="plants")
+    if st.button("Weiter") and answer.strip() == "16":
+        st.session_state.phase = "dot_slider"
+        st.rerun()
+
+def show_dot_slider_and_question():
+    st.markdown("## 🧩 Enthülle das Kunstwerk")
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
             lines = f.readlines()
-
-        val = st.slider("🔍 Enthülle Zeile für Zeile", 1, len(lines), 1)
+        val = st.slider("🔍 Zeilen anzeigen", 1, len(lines), 1)
         st.text("".join(lines[:val]))
+    except FileNotFoundError:
+        st.warning("dot_art.txt fehlt.")
+        return
 
-        if val == len(lines):
-            st.success("🎇 Alles enthüllt!")
+    if val == len(lines):
+        st.success("🎇 Alles enthüllt!")
+        year = st.text_input("Von wann ist das Bild?", key="art_year")
+        if year.strip() == "2018":
             if st.button("🎁 Zur finalen Überraschung"):
                 st.session_state.phase = "final"
                 st.rerun()
-    except FileNotFoundError:
-        st.warning("Textdatei 'dot_art.txt' fehlt.")
-        if st.button("Trotzdem zur Überraschung"):
-            st.session_state.phase = "final"
-            st.rerun()
-
 
 def show_final_reward():
     st.markdown("## 🏆 Finale Belohnung")
@@ -181,7 +186,7 @@ def show_final_reward():
         jetski_img = Image.open("jetski.jpg")
         st.image(jetski_img, caption="🚤 Jetski-Zeit! Happy Birthday!!", use_container_width=True)
     except FileNotFoundError:
-        st.warning("Bild 'jetski.jpg' fehlt.")
+        st.warning("jetski.jpg fehlt.")
 
     try:
         with open("sponge1.gif", "rb") as f:
@@ -193,7 +198,6 @@ def show_final_reward():
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
-
 
 def main():
     st.markdown("<h1 style='text-align: center;'>🎂 Happy Birthday, Lieblingsmensch!</h1>", unsafe_allow_html=True)
@@ -210,16 +214,20 @@ def main():
 
     if "phase" not in st.session_state:
         st.session_state.phase = "quiz"
-        st.session_state.puzzle_step = 0
         st.session_state.quiz_score = 0
 
-    if st.session_state.phase == "quiz":
+    phase = st.session_state.phase
+    if phase == "quiz":
         run_quiz()
-    elif st.session_state.phase == "puzzle":
-        run_puzzle()
-    elif st.session_state.phase == "reward":
-        show_dot_art()
-    elif st.session_state.phase == "final":
+    elif phase == "interlude":
+        show_interlude()
+    elif phase == "puzzle_all":
+        run_puzzle_all()
+    elif phase == "reward_image":
+        show_reward_image_with_audio()
+    elif phase == "dot_slider":
+        show_dot_slider_and_question()
+    elif phase == "final":
         show_final_reward()
 
     st.markdown("---")
