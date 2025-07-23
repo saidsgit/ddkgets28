@@ -228,19 +228,17 @@ def main():
     elif phase == "final":
         show_final_reward()
 
-    st.markdown("---")
-    st.caption("Du bist das ❤️")
     try:
-    st.markdown(
-        """
-        <div style="text-align: center;">
-            <img src="sponge1.gif" style="width: 120px; margin-top: 0.5em;" alt="sponge1">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-except:
-    pass
+        st.markdown(
+            """
+            <div style="text-align: center;">
+                <img src="sponge1.gif" style="width: 120px; margin-top: 0.5em;" alt="sponge1">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    except:
+        pass
 
 
 if __name__ == "__main__":
