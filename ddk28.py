@@ -183,14 +183,14 @@ def show_final_reward():
     st.success("💖 Geschafft!")
 
     try:
-        jetski_img = Image.open("jetski.jpg")
+        jetski_img = Image.open("jetski3.jpg")
         st.image(jetski_img, caption="🚤 Ist das ein Jetski? JA, das ist ein Jetski! \n Kaufen wir also endich ein Jetski?? Nein!\nAber im Mittelmeer eine Runde cruisen ist auch nicht verkehrt😎 Happy Birthday ❤️", use_container_width=True)
     except FileNotFoundError:
         st.warning("jetski.jpg fehlt.")
 
     try:
-        with open("sponge1.gif", "rb") as f:
-            st.image(f.read(), caption="Sponge findet dich großartig 🧽", use_container_width=True)
+        with open("jetski2.gif", "rb") as f:
+            st.image(f.read(), caption="", use_container_width=True)
     except FileNotFoundError:
         pass
 
