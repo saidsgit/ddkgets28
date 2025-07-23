@@ -81,6 +81,11 @@ def run_quiz():
             user_answers.append(user_answer)
         
         submitted = st.form_submit_button("🎯 Einreichen")
+        try:
+            with open("jetski2.gif", "rb") as f:
+                st.image(f.read(), caption="", use_container_width=True)
+        except FileNotFoundError:
+            pass
 
     if submitted:
         score = sum(1 for user_ans, q in zip(user_answers, quiz) if user_ans == q["answer"])
@@ -230,13 +235,6 @@ def main():
 
     st.markdown("---")
     st.caption("Du bist das ❤️")
-
-    try:
-        with open("sponge1.gif", "rb") as f:
-            gif_bytes = f.read()
-        st.image(gif_bytes, width=120)
-    except FileNotFoundError:
-        st.write("sponge1.gif nicht gefunden.")
 
 if __name__ == "__main__":
     main()
