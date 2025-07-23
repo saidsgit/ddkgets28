@@ -232,16 +232,11 @@ def main():
     st.caption("Du bist das ❤️")
 
     try:
-        st.markdown(
-            """
-            <div style="text-align: center;">
-                <img src="sponge1.gif" style="width: 120px; margin-top: 0.5em;" alt="sponge1">
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    except Exception as e:
-        st.write(f"Fehler beim Laden des GIFs: {e}")
+        with open("sponge1.gif", "rb") as f:
+            gif_bytes = f.read()
+        st.image(gif_bytes, width=120)
+    except FileNotFoundError:
+        st.write("sponge1.gif nicht gefunden.")
 
 if __name__ == "__main__":
     main()
