@@ -146,23 +146,18 @@ def run_puzzle_all():
             st.rerun()
 
 def show_arcade_game():
-    st.markdown("## 🕹️ Mini-Arcade-Zwischenrunde")
-    st.markdown("Du darfst jetzt ein Spiel spielen! Danach geht es weiter zur Belohnung! 😄")
+    st.markdown("## 🕹️ Mini-Game-Zwischenrunde")
+    st.markdown("DK mag unnötige Minispiele")
 
     game_url = "https://dino-chrome.com/"
     st.components.v1.iframe(game_url, height=400, scrolling=True)
 
-    if "arcade_timer" not in st.session_state:
-        st.session_state.arcade_timer = time.time()
+    st.markdown("---")
 
-    if time.time() - st.session_state.arcade_timer > 5:
-        st.success("🎮 Das reicht fürs erste!")
-        if st.button("🏁 Weiter zur Belohnung"):
-            st.session_state.phase = "reward_image"
-            st.rerun()
-    else:
-        remaining = 5 - int(time.time() - st.session_state.arcade_timer)
-        st.info(f"⏳ Button erscheint in {remaining} Sekunden...")
+    if st.button("💪 Ich habe es verdient, weiter zu machen"):
+        st.session_state.phase = "reward_image"
+        st.rerun()
+
 
 def show_reward_image_with_audio():
     st.markdown("## 🖼️ Schönheit auf den Punkt gebracht")
