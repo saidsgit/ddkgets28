@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 import random
+import time
 
 st.set_page_config(
     page_title="🎉 Happy Birthday!",
@@ -141,8 +142,27 @@ def run_puzzle_all():
                 st.error(f"❌ Aufgabe {idx+1} ist falsch.")
         if all_correct:
             st.success("✔️ Alle Aufgaben korrekt!")
+            st.session_state.phase = "arcade_game"
+            st.rerun()
+
+def show_arcade_game():
+    st.markdown("## 🕹️ Mini-Arcade-Zwischenrunde")
+    st.markdown("Du darfst jetzt ein Spiel spielen! Danach geht es weiter zur Belohnung! 😄")
+
+    game_url = "https://dino-chrome.com/"
+    st.components.v1.iframe(game_url, height=400, scrolling=True)
+
+    if "arcade_timer" not in st.session_state:
+        st.session_state.arcade_timer = time.time()
+
+    if time.time() - st.session_state.arcade_timer > 5:
+        st.success("🎮 Das reicht fürs erste!")
+        if st.button("🏁 Weiter zur Belohnung"):
             st.session_state.phase = "reward_image"
             st.rerun()
+    else:
+        remaining = 5 - int(time.time() - st.session_state.arcade_timer)
+        st.info(f"⏳ Button erscheint in {remaining} Sekunden...")
 
 def show_reward_image_with_audio():
     st.markdown("## 🖼️ Schönheit auf den Punkt gebracht")
@@ -206,9 +226,7 @@ def show_final_reward():
 
 def main():
     st.markdown("<h1 style='text-align: center;'>🎂 Happy Birthday, Lieblingsmensch!</h1>", unsafe_allow_html=True)
-    st.markdown("""
-    Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite!🎁
-    """)
+    st.markdown("Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite! 🎁")
 
     try:
         st.image("rabbit.gif", caption="🐰", use_container_width=True)
@@ -226,6 +244,8 @@ def main():
         show_interlude()
     elif phase == "puzzle_all":
         run_puzzle_all()
+    elif phase == "arcade_game":
+        show_arcade_game()
     elif phase == "reward_image":
         show_reward_image_with_audio()
     elif phase == "dot_slider":
