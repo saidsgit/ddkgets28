@@ -189,7 +189,7 @@ def show_dot_slider_and_question():
         st.warning("dot_art.txt fehlt.")
         return
 
-    if val == len(lines):
+    if val == 23:
         st.success("📃 Selbst als Text bist Du cools!")
         year = st.text_input("Von wann ist das Bild?", key="art_year")
         if year.strip() == "2019":
