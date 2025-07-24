@@ -183,7 +183,7 @@ def show_dot_slider_and_question():
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
             lines = f.readlines()
-        val = st.slider("🔍 Zeilen anzeigen", 1, len(lines), 1)
+        val = st.slider("🔍 Texte liest man bekanntlich von oben nach unten 🧐", 1, len(lines), 1)
         st.text("".join(lines[:val]))
     except FileNotFoundError:
         st.warning("dot_art.txt fehlt.")
