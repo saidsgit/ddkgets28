@@ -205,7 +205,7 @@ def show_dot_slider_and_question():
                 try:
                     with open("applause.mp3", "rb") as audio_file:
                         st.audio(audio_file.read(), format="audio/mp3")
-                    time.sleep(2)  # Lässt den Applaus 2 Sekunden starten
+                    time.sleep(8)  # Lässt den Applaus 8 Sekunden starten
                 except FileNotFoundError:
                     st.warning("applause.mp3 nicht gefunden.")
         
