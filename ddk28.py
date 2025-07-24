@@ -180,22 +180,34 @@ def show_reward_image_with_audio():
 
 def show_dot_slider_and_question():
     st.markdown("## 📃 Du bist das! Es ist nur Text? Aber Du bist das!")
+
     try:
         with open("dot_art.txt", "r", encoding="utf-8") as f:
             lines = f.readlines()
-        val = st.slider("🔍 Texte liest man bekanntlich von oben nach unten 🧐", 1, len(lines), 1)
+
+        val = st.slider("🔍 Zeilen anzeigen", 1, len(lines), 1)
         st.text("".join(lines[:val]))
+
     except FileNotFoundError:
         st.warning("dot_art.txt fehlt.")
         return
 
     if val == 23:
         st.success("📃 Selbst als Text bist Du cools!")
+
         year = st.text_input("Von wann ist das Bild?", key="art_year")
+
         if year.strip() == "2019":
             if st.button("🎁 TROMMELWIRBEEEL 🥁"):
+                try:
+                    with open("applause.mp3", "rb") as audio_file:
+                        st.audio(audio_file.read(), format="audio/mp3")
+                except FileNotFoundError:
+                    st.warning("applause.mp3 nicht gefunden.")
+
                 st.session_state.phase = "final"
                 st.rerun()
+
 
 def show_final_reward():
     st.markdown("## 🏆 Hiieeeer kommt DDKs superdupercooles DDK-wird-28-Geburtstagstag-Geschenk von Mr. DK für Mrs. DK")
