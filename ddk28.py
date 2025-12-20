@@ -236,6 +236,18 @@ def show_final_reward():
             del st.session_state[key]
         st.rerun()
 
+def dev_skip_footer():
+    st.markdown("---")
+    cols = st.columns([1, 2, 1])
+    with cols[1]:
+        if st.button("⚙️ DEV-SKIP-BUTTON"):
+            order = ["quiz", "interlude", "puzzle_all", "arcade_game", "final"]
+            current = st.session_state.get("phase", "quiz")
+            if current in order:
+                idx = min(order.index(current) + 1, len(order) - 1)
+                st.session_state.phase = order[idx]
+                st.rerun()
+                
 def main():
     st.markdown("<h1 style='text-align: center;'>🎂 Happy Birthday, Lieblingsmensch!</h1>", unsafe_allow_html=True)
     st.markdown("Willkommen zur DDK-wird-28-und-hat-Geburtstagstag-Webseite! 🎁")
@@ -265,21 +277,13 @@ def main():
     elif phase == "final":
         show_final_reward()
 
-        # ------------------------
-    # 🛠️ DEV-SKIP-BUTTON (nur Erstellungsphase)
-    # ------------------------
-    st.markdown("---")
-    with st.expander("🛠️ Dev-Tools (nur für dich)", expanded=False):
-        if st.button("⏭️ Rätsel überspringen"):
-            if st.session_state.phase == "quiz":
-                st.session_state.phase = "puzzle_all"
-            elif st.session_state.phase == "puzzle_all":
-                st.session_state.phase = "arcade_game"
-            st.rerun()
+    
+    dev_skip_footer()
 
     st.markdown("---")
     st.caption("Du bist das ❤️")
 
 if __name__ == "__main__":
     main()
+
 
