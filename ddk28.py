@@ -265,8 +265,21 @@ def main():
     elif phase == "final":
         show_final_reward()
 
+        # ------------------------
+    # 🛠️ DEV-SKIP-BUTTON (nur Erstellungsphase)
+    # ------------------------
+    st.markdown("---")
+    with st.expander("🛠️ Dev-Tools (nur für dich)", expanded=False):
+        if st.button("⏭️ Rätsel überspringen"):
+            if st.session_state.phase == "quiz":
+                st.session_state.phase = "puzzle_all"
+            elif st.session_state.phase == "puzzle_all":
+                st.session_state.phase = "arcade_game"
+            st.rerun()
+
     st.markdown("---")
     st.caption("Du bist das ❤️")
 
 if __name__ == "__main__":
     main()
+
