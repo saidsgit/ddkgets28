@@ -241,7 +241,7 @@ def dev_skip_footer():
     cols = st.columns([1, 2, 1])
     with cols[1]:
         if st.button("⚙️ DEV-SKIP-BUTTON"):
-            order = ["quiz", "interlude", "puzzle_all", "arcade_game", "final"]
+            order = ["quiz", "interlude", "puzzle_all", "arcade_game", "reward_image", "dot_slider", "final"]
             current = st.session_state.get("phase", "quiz")
             if current in order:
                 idx = min(order.index(current) + 1, len(order) - 1)
@@ -285,5 +285,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
