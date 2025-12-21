@@ -278,13 +278,14 @@ def main():
         show_final_reward()
 
     
-    dev_skip_footer()
+    #dev_skip_footer()
 
     st.markdown("---")
     st.caption("Du bist das ❤️")
 
 if __name__ == "__main__":
     main()
+
 
 
 
